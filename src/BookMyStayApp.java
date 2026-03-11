@@ -1,69 +1,45 @@
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
-// Room class
-class Room {
-    String type;
-    int beds;
-    int size;
-    double price;
+// Reservation class
+class Reservation {
 
-    Room(String type, int beds, int size, double price) {
-        this.type = type;
-        this.beds = beds;
-        this.size = size;
-        this.price = price;
+    private String guestName;
+    private String roomType;
+
+    public Reservation(String guestName, String roomType) {
+        this.guestName = guestName;
+        this.roomType = roomType;
     }
 
-    void displayRoom() {
-        System.out.println(type + " Room:");
-        System.out.println("Beds: " + beds);
-        System.out.println("Size: " + size + " sqft");
-        System.out.println("Price per night: " + price);
-    }
-}
-
-// RoomInventory class
-class RoomInventory {
-
-    Map<String, Integer> availability = new HashMap<>();
-
-    RoomInventory() {
-        availability.put("Single", 5);
-        availability.put("Double", 3);
-        availability.put("Suite", 2);
+    public String getGuestName() {
+        return guestName;
     }
 
-    Map<String, Integer> getRoomAvailability() {
-        return availability;
+    public String getRoomType() {
+        return roomType;
     }
 }
 
-// RoomSearchService class
-class RoomSearchService {
+// BookingRequestQueue class
+class BookingRequestQueue {
 
-    public void searchAvailableRooms(RoomInventory inventory,
-                                     Room singleRoom,
-                                     Room doubleRoom,
-                                     Room suiteRoom) {
+    private Queue<Reservation> requestQueue;
 
-        Map<String, Integer> availability = inventory.getRoomAvailability();
+    public BookingRequestQueue() {
+        requestQueue = new LinkedList<>();
+    }
 
-        if (availability.get("Single") > 0) {
-            singleRoom.displayRoom();
-            System.out.println("Available: " + availability.get("Single"));
-            System.out.println();
-        }
+    public void addRequest(Reservation reservation) {
+        requestQueue.offer(reservation);
+    }
 
-        if (availability.get("Double") > 0) {
-            doubleRoom.displayRoom();
-            System.out.println("Available: " + availability.get("Double"));
-            System.out.println();
-        }
+    public Reservation getNextRequest() {
+        return requestQueue.poll();
+    }
 
-        if (availability.get("Suite") > 0) {
-            suiteRoom.displayRoom();
-            System.out.println("Available: " + availability.get("Suite"));
-        }
+    public boolean hasPendingRequests() {
+        return !requestQueue.isEmpty();
     }
 }
 
@@ -72,21 +48,26 @@ public class BookMyStayApp {
 
     public static void main(String[] args) {
 
-        RoomInventory inventory = new RoomInventory();
+        System.out.println("Booking Request Queue");
 
-        Room singleRoom = new Room("Single", 1, 250, 1500.0);
-        Room doubleRoom = new Room("Double", 2, 400, 2500.0);
-        Room suiteRoom = new Room("Suite", 3, 750, 5000.0);
+        BookingRequestQueue bookingQueue = new BookingRequestQueue();
 
-        RoomSearchService service = new RoomSearchService();
+        Reservation r1 = new Reservation("Amit", "Single");
+        Reservation r2 = new Reservation("Subha", "Double");
+        Reservation r3 = new Reservation("Varmesh", "Suite");
 
-        System.out.println("Room Search\n");
+        bookingQueue.addRequest(r1);
+        bookingQueue.addRequest(r2);
+        bookingQueue.addRequest(r3);
 
-        service.searchAvailableRooms(
-                inventory,
-                singleRoom,
-                doubleRoom,
-                suiteRoom
-        );
+        while (bookingQueue.hasPendingRequests()) {
+
+            Reservation next = bookingQueue.getNextRequest();
+
+            System.out.println("Processing booking for Guest: "
+                    + next.getGuestName()
+                    + ", Room Type: "
+                    + next.getRoomType());
+        }
     }
 }
