@@ -1,109 +1,50 @@
-import java.util.*;
+// Main.java
 
-// Reservation class
-class Reservation {
+// Service Interface
+interface Service {
+    int perform(int num1, int num2);
+}
 
-    private String guestName;
-    private String roomType;
+// Service Implementation
+class ServiceImpl implements Service {
 
-    public Reservation(String guestName, String roomType) {
-        this.guestName = guestName;
-        this.roomType = roomType;
+    public ServiceImpl() {
+        System.out.println("Service object created");
     }
 
-    public String getGuestName() {
-        return guestName;
-    }
-
-    public String getRoomType() {
-        return roomType;
+    @Override
+    public int perform(int num1, int num2) {
+        return num1 + num2;
     }
 }
 
+// Service Configurer
+class ServiceConfigurer {
 
-// RoomInventory class
-class RoomInventory {
-
-    private Map<String, Integer> rooms = new HashMap<>();
-
-    public RoomInventory() {
-        rooms.put("Single", 2);
-        rooms.put("Double", 2);
-        rooms.put("Suite", 1);
+    public ServiceConfigurer() {
+        System.out.println("Configurer created");
     }
 
-    public boolean isAvailable(String roomType) {
-        return rooms.getOrDefault(roomType, 0) > 0;
-    }
-
-    public void bookRoom(String roomType) {
-        rooms.put(roomType, rooms.get(roomType) - 1);
+    public Service getService() {
+        return new ServiceImpl();
     }
 }
-
-
-// RoomAllocationService
-class RoomAllocationService {
-
-    private Set<String> allocatedRoomIds = new HashSet<>();
-    private Map<String, Set<String>> assignedRoomsByType = new HashMap<>();
-
-    public RoomAllocationService() {
-        assignedRoomsByType.put("Single", new HashSet<>());
-        assignedRoomsByType.put("Double", new HashSet<>());
-        assignedRoomsByType.put("Suite", new HashSet<>());
-    }
-
-    public void allocateRoom(Reservation reservation, RoomInventory inventory) {
-
-        String roomType = reservation.getRoomType();
-
-        if (inventory.isAvailable(roomType)) {
-
-            String roomId = generateRoomId(roomType);
-
-            allocatedRoomIds.add(roomId);
-            assignedRoomsByType.get(roomType).add(roomId);
-
-            inventory.bookRoom(roomType);
-
-            System.out.println(
-                    "Booking confirmed for Guest: "
-                            + reservation.getGuestName()
-                            + ", Room ID: "
-                            + roomId
-            );
-
-        } else {
-            System.out.println("No rooms available for " + roomType);
-        }
-    }
-
-    private String generateRoomId(String roomType) {
-
-        int number = assignedRoomsByType.get(roomType).size() + 1;
-
-        return roomType + "-" + number;
-    }
-}
-
 
 // Main Class
 public class BookMyStayApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Room Allocation Processing");
+        // create configurer object
+        ServiceConfigurer config = new ServiceConfigurer();
 
-        RoomInventory inventory = new RoomInventory();
-        RoomAllocationService service = new RoomAllocationService();
+        // get service object
+        Service service = config.getService();
 
-        Reservation r1 = new Reservation("Amit", "Single");
-        Reservation r2 = new Reservation("Subha", "Single");
-        Reservation r3 = new Reservation("Varmesh", "Suite");
+        // perform addition
+        int result = service.perform(10, 20);
 
-        service.allocateRoom(r1, inventory);
-        service.allocateRoom(r2, inventory);
-        service.allocateRoom(r3, inventory);
+        // print result
+        System.out.println("Result is: " + result);
     }
 }
