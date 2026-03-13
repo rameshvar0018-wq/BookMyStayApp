@@ -1,32 +1,48 @@
-// Main.java
 
-// Service Interface
-interface Service {
-    int perform(int num1, int num2);
+import java.util.*;
+
+// BookingHistory class
+class BookingHistory {
+
+    int bookingId;
+    String guestName;
+    String roomType;
+    int nights;
+
+    public BookingHistory(int bookingId, String guestName, String roomType, int nights) {
+        this.bookingId = bookingId;
+        this.guestName = guestName;
+        this.roomType = roomType;
+        this.nights = nights;
+    }
+
+    public String toString() {
+        return "Booking ID: " + bookingId +
+                "\nGuest Name: " + guestName +
+                "\nRoom Type: " + roomType +
+                "\nNights: " + nights;
+    }
 }
 
-// Service Implementation
-class ServiceImpl implements Service {
+// Repository Interface
+interface BookingHistoryRepository {
 
-    public ServiceImpl() {
-        System.out.println("Service object created");
-    }
+    void addBooking(BookingHistory booking);
 
-    @Override
-    public int perform(int num1, int num2) {
-        return num1 + num2;
-    }
+    List<BookingHistory> getAllBookings();
 }
 
-// Service Configurer
-class ServiceConfigurer {
+// Repository Implementation
+class InMemoryBookingHistoryRepository implements BookingHistoryRepository {
 
-    public ServiceConfigurer() {
-        System.out.println("Configurer created");
+    List<BookingHistory> bookings = new ArrayList<>();
+
+    public void addBooking(BookingHistory booking) {
+        bookings.add(booking);
     }
 
-    public Service getService() {
-        return new ServiceImpl();
+    public List<BookingHistory> getAllBookings() {
+        return bookings;
     }
 }
 
@@ -35,16 +51,16 @@ public class BookMyStayApp {
 
     public static void main(String[] args) {
 
-        // create configurer object
-        ServiceConfigurer config = new ServiceConfigurer();
+        BookingHistoryRepository repo = new InMemoryBookingHistoryRepository();
 
-        // get service object
-        Service service = config.getService();
+        repo.addBooking(new BookingHistory(101, "John", "Single", 2));
+        repo.addBooking(new BookingHistory(102, "Alice", "Double", 3));
 
-        // perform addition
-        int result = service.perform(10, 20);
+        List<BookingHistory> list = repo.getAllBookings();
 
-        // print result
-        System.out.println("Result is: " + result);
+        for (BookingHistory b : list) {
+            System.out.println(b);
+            System.out.println();
+        }
     }
 }
