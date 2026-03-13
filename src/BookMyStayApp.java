@@ -1,39 +1,29 @@
-// BookingCancellation class
-class BookingCancellation {
+// CommandBookingProcessor Interface
+interface CommandBookingProcessor {
+    void processBooking(String bookingId, String customerName, String seatType);
+}
 
-    int bookingId;
-    String passengerName;
-    String seatType;
+// CommandBookingService class
+class CommandBookingService {
 
-    // constructor
-    public BookingCancellation(int bookingId, String passengerName, String seatType) {
-        this.bookingId = bookingId;
-        this.passengerName = passengerName;
-        this.seatType = seatType;
+    public void bookSeat(String bookingId, String customerName, String seatType) {
+        System.out.println("Booking confirmed: " + bookingId +
+                ", Name: " + customerName +
+                ", Seat: " + seatType);
     }
 
-    public String toString() {
-        return "Booking ID: " + bookingId +
-                ", Passenger: " + passengerName +
-                ", Seat Type: " + seatType;
+    public void cancelSeat(String bookingId) {
+        System.out.println("Booking cancelled: " + bookingId);
     }
 }
 
-// BookingService class
-class BookingService {
+// ReservationCommandProcessor class
+class ReservationCommandProcessor implements CommandBookingProcessor {
 
-    int totalSeats = 5;
+    CommandBookingService service = new CommandBookingService();
 
-    // method to cancel booking
-    public void cancelBooking(BookingCancellation booking) {
-        System.out.println("Booking cancelled successfully, refunded amount for seat type: "
-                + booking.seatType);
-    }
-
-    // method to update seat availability
-    public void updateSeatAvailability() {
-        totalSeats++;
-        System.out.println("Updated seats free: " + totalSeats);
+    public void processBooking(String bookingId, String customerName, String seatType) {
+        service.bookSeat(bookingId, customerName, seatType);
     }
 }
 
@@ -42,12 +32,11 @@ public class BookMyStayApp {
 
     public static void main(String[] args) {
 
-        BookingCancellation booking =
-                new BookingCancellation(101, "Alice", "Sleeper");
+        CommandBookingProcessor processor = new ReservationCommandProcessor();
 
-        BookingService service = new BookingService();
+        processor.processBooking("101", "Alice", "Sleeper");
+        processor.processBooking("102", "Bob", "AC");
 
-        service.cancelBooking(booking);
-        service.updateSeatAvailability();
+        System.out.println("Processing complete...");
     }
 }
