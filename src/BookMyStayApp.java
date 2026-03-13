@@ -1,66 +1,41 @@
+// NotificationService class
+class NotificationService {
 
-import java.util.*;
-
-// BookingHistory class
-class BookingHistory {
-
-    int bookingId;
-    String guestName;
-    String roomType;
-    int nights;
-
-    public BookingHistory(int bookingId, String guestName, String roomType, int nights) {
-        this.bookingId = bookingId;
-        this.guestName = guestName;
-        this.roomType = roomType;
-        this.nights = nights;
-    }
-
-    public String toString() {
-        return "Booking ID: " + bookingId +
-                "\nGuest Name: " + guestName +
-                "\nRoom Type: " + roomType +
-                "\nNights: " + nights;
+    // method to send notification
+    public void sendNotification(String message) {
+        System.out.println("Notification sent: " + message);
     }
 }
 
-// Repository Interface
-interface BookingHistoryRepository {
+// UserService class
+class UserService {
 
-    void addBooking(BookingHistory booking);
+    private NotificationService notificationService;
 
-    List<BookingHistory> getAllBookings();
-}
-
-// Repository Implementation
-class InMemoryBookingHistoryRepository implements BookingHistoryRepository {
-
-    List<BookingHistory> bookings = new ArrayList<>();
-
-    public void addBooking(BookingHistory booking) {
-        bookings.add(booking);
+    // constructor injection
+    public UserService(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
 
-    public List<BookingHistory> getAllBookings() {
-        return bookings;
+    // method to add user
+    public void addUser(String username) {
+        System.out.println("User added: " + username);
+
+        // send notification
+        notificationService.sendNotification("Welcome " + username);
     }
 }
 
-// Main Class
+// Main class
 public class BookMyStayApp {
 
     public static void main(String[] args) {
 
-        BookingHistoryRepository repo = new InMemoryBookingHistoryRepository();
+        // create objects
+        NotificationService notificationService = new NotificationService();
+        UserService userService = new UserService(notificationService);
 
-        repo.addBooking(new BookingHistory(101, "John", "Single", 2));
-        repo.addBooking(new BookingHistory(102, "Alice", "Double", 3));
-
-        List<BookingHistory> list = repo.getAllBookings();
-
-        for (BookingHistory b : list) {
-            System.out.println(b);
-            System.out.println();
-        }
+        // add user
+        userService.addUser("Alice");
     }
 }
