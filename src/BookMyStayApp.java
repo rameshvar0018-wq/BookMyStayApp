@@ -1,28 +1,39 @@
-// NotificationService class
-class NotificationService {
+// BookingCancellation class
+class BookingCancellation {
 
-    // method to send notification
-    public void sendNotification(String message) {
-        System.out.println("Notification sent: " + message);
+    int bookingId;
+    String passengerName;
+    String seatType;
+
+    // constructor
+    public BookingCancellation(int bookingId, String passengerName, String seatType) {
+        this.bookingId = bookingId;
+        this.passengerName = passengerName;
+        this.seatType = seatType;
+    }
+
+    public String toString() {
+        return "Booking ID: " + bookingId +
+                ", Passenger: " + passengerName +
+                ", Seat Type: " + seatType;
     }
 }
 
-// UserService class
-class UserService {
+// BookingService class
+class BookingService {
 
-    private NotificationService notificationService;
+    int totalSeats = 5;
 
-    // constructor injection
-    public UserService(NotificationService notificationService) {
-        this.notificationService = notificationService;
+    // method to cancel booking
+    public void cancelBooking(BookingCancellation booking) {
+        System.out.println("Booking cancelled successfully, refunded amount for seat type: "
+                + booking.seatType);
     }
 
-    // method to add user
-    public void addUser(String username) {
-        System.out.println("User added: " + username);
-
-        // send notification
-        notificationService.sendNotification("Welcome " + username);
+    // method to update seat availability
+    public void updateSeatAvailability() {
+        totalSeats++;
+        System.out.println("Updated seats free: " + totalSeats);
     }
 }
 
@@ -31,11 +42,12 @@ public class BookMyStayApp {
 
     public static void main(String[] args) {
 
-        // create objects
-        NotificationService notificationService = new NotificationService();
-        UserService userService = new UserService(notificationService);
+        BookingCancellation booking =
+                new BookingCancellation(101, "Alice", "Sleeper");
 
-        // add user
-        userService.addUser("Alice");
+        BookingService service = new BookingService();
+
+        service.cancelBooking(booking);
+        service.updateSeatAvailability();
     }
 }
