@@ -1,42 +1,34 @@
-// CommandBookingProcessor Interface
-interface CommandBookingProcessor {
-    void processBooking(String bookingId, String customerName, String seatType);
-}
-
-// CommandBookingService class
-class CommandBookingService {
-
-    public void bookSeat(String bookingId, String customerName, String seatType) {
-        System.out.println("Booking confirmed: " + bookingId +
-                ", Name: " + customerName +
-                ", Seat: " + seatType);
-    }
-
-    public void cancelSeat(String bookingId) {
-        System.out.println("Booking cancelled: " + bookingId);
+class FileNotFoundException1 extends Exception {
+    public FileNotFoundException1(String message) {
+        super(message);
     }
 }
 
-// ReservationCommandProcessor class
-class ReservationCommandProcessor implements CommandBookingProcessor {
-
-    CommandBookingService service = new CommandBookingService();
-
-    public void processBooking(String bookingId, String customerName, String seatType) {
-        service.bookSeat(bookingId, customerName, seatType);
-    }
-}
-
-// Main class
 public class BookMyStayApp {
+
+    // Method that may throw the custom exception
+    public static void inventoryProduct(int quantity, String fileName)
+            throws FileNotFoundException1 {
+
+        if (fileName == null || fileName.isEmpty()) {
+            throw new FileNotFoundException1("File name is missing!");
+        }
+
+        System.out.println("Inventory updated.");
+        System.out.println("Quantity: " + quantity);
+        System.out.println("File: " + fileName);
+    }
 
     public static void main(String[] args) {
 
-        CommandBookingProcessor processor = new ReservationCommandProcessor();
+        try {
+            // calling the method
+            inventoryProduct(50, "");
+        }
+        catch (FileNotFoundException1 e) {
+            System.out.println("Exception caught: " + e.getMessage());
+        }
 
-        processor.processBooking("101", "Alice", "Sleeper");
-        processor.processBooking("102", "Bob", "AC");
-
-        System.out.println("Processing complete...");
+        System.out.println("Program continues...");
     }
 }
